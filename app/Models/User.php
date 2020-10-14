@@ -11,7 +11,7 @@ use App\Models\Borrow;
 
 class User extends Authenticatable
 {
-    use HasFactory, Notifiable,HasApiTokens;
+    use HasFactory, Notifiable, HasApiTokens;
 
     /**
      * The attributes that are mass assignable.
@@ -19,7 +19,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'name', 'email', 'phone','password',
+        'first_name', 'last_name', 'email', 'phone', 'password'
     ];
 
     /**

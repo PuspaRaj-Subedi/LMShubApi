@@ -59,7 +59,7 @@ class BorrowController extends Controller
     public function store(Request $request, $id)
     {
         $borrows = new Borrow();
-       
+
         $request->validate([
             'day'=>'required|integer',
             'quantity'=>'required|integer',
@@ -68,7 +68,7 @@ class BorrowController extends Controller
         {
         $user_id = Auth::user()->id
         $borrow_request = Borrow::where(['book_id','$id'],['user_id',$user_id],['status',1])->get();
-        
+
         if(count($borrow_request) == 0)
             {
                 $borrows->user_id = $user_id;
@@ -78,7 +78,7 @@ class BorrowController extends Controller
                 $borrows->requested_quantity= $request->quantity;
                 if($borrows->save())
                 {
-    
+
                     $email = Auth::user()->email;
                     $user = User::where('email', $email)->first();
                     $user->notify(
@@ -92,10 +92,10 @@ class BorrowController extends Controller
                 }
             }
             else
-            {   
+            {
                 return response()->json(['error'=>'You have already requested the book once.']);
             }
-           
+
         }
         return response()->json(['error'=>'Please Login First']);
 
