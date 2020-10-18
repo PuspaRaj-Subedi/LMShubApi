@@ -22,23 +22,21 @@ Route::group(['prefix' => 'auth'], function () {
         Route::get('logout', [App\Http\Controllers\AuthController::class, 'logout']);
         Route::get('user', [App\Http\Controllers\AuthController::class, 'user']);
     });
-    Route::middleware('can:isAdmin')->group(function () {
-        Route::group(['prefix' => 'libarian', 'middleware' => 'auth:api'], function () {
-            Route::get('requested', [App\Http\Controllers\BookController::class, 'requested']);
-            Route::post('pending/{status}/{id}/{book}', [App\Http\Controllers\BookController::class, 'Pending']);
-            Route::delete('delete_books/{id}', [App\Http\Controllers\BookController::class, 'destroy']);
-            Route::put('update_books/{id}', [App\Http\Controllers\BookController::class, 'update']);
-            Route::post('add_books', [App\Http\Controllers\BookController::class, 'create']);
-            Route::get('books', [App\Http\Controllers\BookController::class, 'getBooks']);
-            Route::get('books/{id}', [App\Http\Controllers\BookController::class, 'getSingle']);
-        });
+
+    Route::group(['prefix' => 'libarian', 'middleware' => 'auth:api'], function () {
+        Route::get('requested', [App\Http\Controllers\BookController::class, 'requested']);
+        Route::post('pending/{status}/{id}/{book}', [App\Http\Controllers\BookController::class, 'Pending']);
+        Route::delete('delete_books/{id}', [App\Http\Controllers\BookController::class, 'destroy']);
+        Route::put('update_books/{id}', [App\Http\Controllers\BookController::class, 'update']);
+        Route::post('add_books', [App\Http\Controllers\BookController::class, 'create']);
+        Route::get('books', [App\Http\Controllers\BookController::class, 'getBooks']);
+        Route::get('books/{id}', [App\Http\Controllers\BookController::class, 'getSingle']);
     });
-    Route::middleware('can:isUser')->group(function () {
-        Route::group(['prefix' => 'student', 'middleware' => 'auth:api'], function () {
-            Route::get('borrow', [App\Http\Controllers\BorrowController::class, 'myBorrow']);
-            Route::post('borrows/{id}', [App\Http\Controllers\BorrowController::class, 'store']);
-            Route::get('books', [App\Http\Controllers\BookController::class, 'getBooks']);
-            Route::get('books/{id}', [App\Http\Controllers\BookController::class, 'getSingle']);
-        });
+
+    Route::group(['prefix' => 'student', 'middleware' => 'auth:api'], function () {
+        Route::get('borrow', [App\Http\Controllers\BorrowController::class, 'myBorrow']);
+        Route::post('borrows/{id}', [App\Http\Controllers\BorrowController::class, 'store']);
+        Route::get('books', [App\Http\Controllers\BookController::class, 'getBooks']);
+        Route::get('books/{id}', [App\Http\Controllers\BookController::class, 'getSingle']);
     });
 });

@@ -19,46 +19,43 @@ class BookController extends Controller
     public function getBooks()
     {
 
-            $books = Book::where('quantity','>',0)->get();
-            return response()->json([
-                'Books' => $books
-            ]);
-
+        $books = Book::where('quantity', '>', 0)->get();
+        return response()->json([
+            'Books' => $books
+        ]);
     }
     public function getSingle($id)
     {
 
-            $book = Book::find($id);
-            return response()->json([
-                'Book' => $book
-            ]);
-
+        $book = Book::find($id);
+        return response()->json([
+            'Book' => $book
+        ]);
     }
-    public function Pending($status,$id,$book)
+    public function Pending($status, $id, $book)
     {
-        $borrow_request = Borrow::where([['user_id',$id],['book_id',$book]])->update(['status'=> $status]);
-        $user = User::where('id',$id)->first();
+        $borrow_request = Borrow::where([['user_id', $id], ['book_id', $book]])->update(['status' => $status]);
+        $user = User::where('id', $id)->first();
         $user->notify(
-             new StatusUpdate($status)
-                );
+            new StatusUpdate($status)
+        );
         return response()->json(
             [
-                'message'=>'Borrow Accepted or Rejected',
-                'data'=>$borrow_request,
+                'message' => 'Borrow Accepted or Rejected',
+                'data' => $borrow_request,
             ]
-            );
-
+        );
     }
     public function requested()
     {
 
-        $borrow_request = Borrow::where('status',1)->get();
+        $borrow_request = Borrow::where('status', 1)->get();
         return response()->json(
             [
-                'message'=>'Borrow Request',
-                'data'=>$borrow_request,
+                'message' => 'Borrow Request',
+                'data' => $borrow_request,
             ]
-            );
+        );
     }
 
 
@@ -71,29 +68,31 @@ class BookController extends Controller
     {
         $books = new Book();
         $request->validate([
-            'title'=>'required|string',
-            'ISBN'=>'required|string',
-            'author'=>'required|string',
-            'quantity'=>'required|integer',
+            'title' => 'required|string',
+            'ISBN' => 'required|string',
+            'description' => 'required|string',
+            'author' => 'required|string',
+            'quantity' => 'required|integer',
             'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048'
         ]);
         if ($request->hasFile('image')) {
-            $imageName = time().'.'.request()->image->getClientOriginalExtension();
+            $imageName = time() . '.' . request()->image->getClientOriginalExtension();
             request()->image->move(public_path('books'), $imageName);
-            $books->image_url=$imageName;
+            $books->image_url = $imageName;
             $isbn = $request->ISBN;
-            $isbn='00'.$books->id.time();
+            $isbn = $isbn . $books->id . time();
             $books->ISBN = $isbn;
             $books->title = $request->title;
-            $books->author=$request->author;
-            $books->quantity= $request->quantity;
+            $books->description = $request->description;
+            $books->author = $request->author;
+            $books->quantity = $request->quantity;
             $books->save();
             return response()->json([
                 "success" => true,
                 "message" => "Book added successfully!!",
                 "file" => $imageName
             ]);
-            }
+        }
     }
 
     /**
@@ -136,25 +135,23 @@ class BookController extends Controller
      * @param  \App\Models\Book  $book
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id) {
-          $book = Book::find($id);
-          $book->title = is_null($request->title) ? $book->title : $book->title;
-          $book->author = is_null($request->author) ? $book->author : $book->author;
-          $book->quantity = is_null($request->quantity)? $book->quantity : $book->quantity;
+    public function update(Request $request, $id)
+    {
+        $book = Book::find($id);
+        $book->title = is_null($request->title) ? $book->title : $book->title;
+        $book->author = is_null($request->author) ? $book->author : $book->author;
+        $book->quantity = is_null($request->quantity) ? $book->quantity : $book->quantity;
 
-         if( $book->save()){
+        if ($book->save()) {
             return response()->json([
                 "message" => "records updated successfully"
-              ], 200);
-         }
-         else{
+            ], 200);
+        } else {
             return response()->json([
                 "message" => "Book not found"
-              ], 404);
-         }
-
-
-      }
+            ], 404);
+        }
+    }
 
     /**
      * Remove the specified resource from storage.
@@ -164,17 +161,17 @@ class BookController extends Controller
      */
     public function destroy($id)
     {
-        if(Book::where('id', $id)->exists()) {
+        if (Book::where('id', $id)->exists()) {
             $book = Book::find($id);
             $book->delete();
 
             return response()->json([
-              "message" => "book deleted"
+                "message" => "book deleted"
             ], 202);
-          } else {
+        } else {
             return response()->json([
-              "message" => "Book not found"
+                "message" => "Book not found"
             ], 404);
-          }
+        }
     }
 }

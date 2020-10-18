@@ -19,25 +19,23 @@ class BorrowController extends Controller
      */
     public function myBorrow()
     {
-        if(Auth::check())
-        {
-        $id = Auth::user()->id;
-        $borrow_request = Borrow::where('status',1)->get();
+        if (Auth::check()) {
+            $id = Auth::user()->id;
+            $borrow_request = Borrow::where('status', 1)->get();
 
-        // new StatusUpdate($borrow_request->User->)
-        return response()->json(
-            [
-                'message'=>'Your Borrow Request',
-                'data'=>$borrow_request,
-            ]
+            // new StatusUpdate($borrow_request->User->)
+            return response()->json(
+                [
+                    'message' => 'Your Borrow Request',
+                    'data' => $borrow_request,
+                ]
+            );
+        } else {
+            return response()->json(
+                'message',
+                'You should login'
             );
         }
-        else{
-            return response()->json(
-                    'message','You should login'
-                );
-        }
-
     }
 
     /**
@@ -58,46 +56,46 @@ class BorrowController extends Controller
      */
     public function store(Request $request, $id)
     {
-        $borrows = new Borrow();
+        //     $borrows = new Borrow();
 
-        $request->validate([
-            'day'=>'required|integer',
-            'quantity'=>'required|integer',
-        ]);
-        if(Auth::check())
-        {
-        $user_id = Auth::user()->id
-        $borrow_request = Borrow::where(['book_id','$id'],['user_id',$user_id],['status',1])->get();
+        //     $request->validate([
+        //         'day'=>'required|integer',
+        //         'quantity'=>'required|integer',
+        //     ]);
+        //     if(Auth::check())
+        //     {
+        //     $user_id = Auth::user()->id
+        //    // $borrow_request = Borrow::where(['book_id','$id'],['user_id',$user_id],['status',1])->get();
 
-        if(count($borrow_request) == 0)
-            {
-                $borrows->user_id = $user_id;
-                $borrows->book_id= $request->id;
-                $return_date = Carbon::now()->addDays($request->day);
-                $borrows->return_date= $return_date;
-                $borrows->requested_quantity= $request->quantity;
-                if($borrows->save())
-                {
+        //     if(count($borrow_request) == 0)
+        //         {
+        //             $borrows->user_id = $user_id;
+        //             $borrows->book_id= $request->id;
+        //             $return_date = Carbon::now()->addDays($request->day);
+        //             $borrows->return_date= $return_date;
+        //             $borrows->requested_quantity= $request->quantity;
+        //             if($borrows->save())
+        //             {
 
-                    $email = Auth::user()->email;
-                    $user = User::where('email', $email)->first();
-                    $user->notify(
-                        new StatusUpdate($borrows->status)
-                    );
-                    return response()->json(['message'=>'Your request is submitted']);
-                }
-                else
-                {
-                    return response()->json(['error'=>'error in requesting']);
-                }
-            }
-            else
-            {
-                return response()->json(['error'=>'You have already requested the book once.']);
-            }
+        //                 $email = Auth::user()->email;
+        //                 $user = User::where('email', $email)->first();
+        //                 $user->notify(
+        //                     new StatusUpdate($borrows->status)
+        //                 );
+        //                 return response()->json(['message'=>'Your request is submitted']);
+        //             }
+        //             else
+        //             {
+        //                 return response()->json(['error'=>'error in requesting']);
+        //             }
+        //         }
+        //         else
+        //         {
+        //             return response()->json(['error'=>'You have already requested the book once.']);
+        //         }
 
-        }
-        return response()->json(['error'=>'Please Login First']);
+        //     }
+        //     return response()->json(['error'=>'Please Login First']);
 
     }
 
@@ -107,7 +105,7 @@ class BorrowController extends Controller
      * @param  \App\Models\Borrow  $borrow
      * @return \Illuminate\Http\Response
      */
-    public function show(Borrow $borrow)
+    public function show()
     {
         //
     }

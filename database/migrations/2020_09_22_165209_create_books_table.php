@@ -17,8 +17,10 @@ class CreateBooksTable extends Migration
             $table->bigIncrements('id');
             $table->string('ISBN')->unique();
             $table->string('author');
+
             $table->biginteger('quantity');
             $table->longText('title');
+            $table->longText('description');
             $table->string('image_url');
             $table->tinyInteger('active')->default(1); //1=>active
             $table->timestamps();

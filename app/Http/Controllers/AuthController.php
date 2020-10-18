@@ -44,11 +44,11 @@ class AuthController extends Controller
 
         if (Auth::attempt($credentials)) {
             $user = Auth::user();
-            if ($user->role == 3) {
-                $user['token'] = $user->createToken('Xpress')->accessToken;
-                return response()->json(['data' => 'sucess'], $this->successStatus);
-            } else
-                return response()->json(['error' => 'Unauthorised'], 401);
+            // if ($user->role == 3) {
+            $user['token'] = $user->createToken('lms')->accessToken;
+            return response()->json(['data' => $user], $this->successStatus);
+            // } else
+            //     return response()->json(['error' => 'Unauthorised'], 401);
         } else {
             return response()->json(['error' => 'Unauthorised'], 401);
         }
