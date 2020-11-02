@@ -11,7 +11,7 @@ class Book extends Model
 {
     use HasFactory;
 
-    public function Borrow()
+    public function borrow()
     {
         return $this->hasMany(Borrow::class);
     }

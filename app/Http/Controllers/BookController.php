@@ -6,6 +6,8 @@ use App\Models\Book;
 use App\Models\User;
 use App\Models\Borrow;
 use App\Notifications\StatusUpdate;
+use Twilio\Rest\Client;
+use Twilio\Jwt\ClientToken;
 
 use Illuminate\Http\Request;
 
@@ -19,7 +21,7 @@ class BookController extends Controller
     public function getBooks()
     {
 
-        $books = Book::where('quantity', '>', 0)->get();
+        $books = Book::where('quantity', '>', 0,)->get();
         return response()->json([
             'Books' => $books
         ]);
@@ -32,13 +34,14 @@ class BookController extends Controller
             'Book' => $book
         ]);
     }
-    public function Pending($status, $id, $book)
+    public function Pending($status, $user_id, $book)
     {
-        $borrow_request = Borrow::where([['user_id', $id], ['book_id', $book]])->update(['status' => $status]);
-        $user = User::where('id', $id)->first();
+        $borrow_request = Borrow::where([['user_id', $user_id], ['book_id', $book]])->update(['status' => $status]);
+        $user = User::where('id', $user_id)->first();
         $user->notify(
             new StatusUpdate($status)
         );
+
         return response()->json(
             [
                 'message' => 'Borrow Accepted or Rejected',
@@ -57,7 +60,30 @@ class BookController extends Controller
             ]
         );
     }
+    public function sendSms()
+    {
+        $accountSid = config('app.twilio')['TWILIO_ACCOUNT_SID'];
+        $authToken  = config('app.twilio')['TWILIO_AUTH_TOKEN'];
+        $appSid     = config('app.twilio')['TWILIO_APP_SID'];
+        $client = new Client($accountSid, $authToken);
 
+        // Use the client to do fun stuff like send text messages!
+        $client->messages->create(
+            // the number you'd like to send the message to
+            '+00619845703020',
+            array(
+                // A Twilio phone number you purchased at twilio.com/console
+                'from' => '+12082685376',
+                // the body of the text message you'd like to send
+                'body' => 'Hey Deepika! It’s test from your LMShub Project!'
+            )
+        );
+        return response()->json(
+            [
+                'message' => 'Borrow Accepted or Rejected',
+            ]
+        );
+    }
 
     /**
      * Show the form for creating a new resource.

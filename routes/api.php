@@ -25,16 +25,17 @@ Route::group(['prefix' => 'auth'], function () {
 
     Route::group(['prefix' => 'libarian', 'middleware' => 'auth:api'], function () {
         Route::get('requested', [App\Http\Controllers\BookController::class, 'requested']);
-        Route::post('pending/{status}/{id}/{book}', [App\Http\Controllers\BookController::class, 'Pending']);
+        Route::post('pending/{status}/{user_id}/{book}', [App\Http\Controllers\BookController::class, 'Pending']);
         Route::delete('delete_books/{id}', [App\Http\Controllers\BookController::class, 'destroy']);
         Route::put('update_books/{id}', [App\Http\Controllers\BookController::class, 'update']);
         Route::post('add_books', [App\Http\Controllers\BookController::class, 'create']);
-        Route::get('books', [App\Http\Controllers\BookController::class, 'getBooks']);
-        Route::get('books/{id}', [App\Http\Controllers\BookController::class, 'getSingle']);
+        Route::post('books', [App\Http\Controllers\BookController::class, 'getBooks']);
+        Route::post('sendsms', [App\Http\Controllers\BookController::class, 'sendSms']);
+        Route::get('books/details/{id}', [App\Http\Controllers\BookController::class, 'getSingle']);
     });
 
     Route::group(['prefix' => 'student', 'middleware' => 'auth:api'], function () {
-        Route::get('borrow', [App\Http\Controllers\BorrowController::class, 'myBorrow']);
+        Route::get('myborrow', [App\Http\Controllers\BorrowController::class, 'myBorrow']);
         Route::post('borrows/{id}', [App\Http\Controllers\BorrowController::class, 'store']);
         Route::get('books', [App\Http\Controllers\BookController::class, 'getBooks']);
         Route::get('books/{id}', [App\Http\Controllers\BookController::class, 'getSingle']);

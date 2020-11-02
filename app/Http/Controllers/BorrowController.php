@@ -21,7 +21,27 @@ class BorrowController extends Controller
     {
         if (Auth::check()) {
             $id = Auth::user()->id;
-            $borrow_request = Borrow::where('status', 1)->get();
+            $borrow_request = Borrow::where('status', 3)->get();
+
+            // new StatusUpdate($borrow_request->User->)
+            return response()->json(
+                [
+                    'message' => 'Your Borrow Request',
+                    'data' => $borrow_request,
+                ]
+            );
+        } else {
+            return response()->json(
+                'message',
+                'You should login'
+            );
+        }
+    }
+    public function myRequest()
+    {
+        if (Auth::check()) {
+            $id = Auth::user()->id;
+            $borrow_request = Borrow::where('status', [1, 2])->get();
 
             // new StatusUpdate($borrow_request->User->)
             return response()->json(
@@ -66,7 +86,6 @@ class BorrowController extends Controller
         //     {
         //     $user_id = Auth::user()->id
         //    // $borrow_request = Borrow::where(['book_id','$id'],['user_id',$user_id],['status',1])->get();
-
         //     if(count($borrow_request) == 0)
         //         {
         //             $borrows->user_id = $user_id;
